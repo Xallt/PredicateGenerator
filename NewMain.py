@@ -653,7 +653,7 @@ class Lang:
             interps.append(Interpretation(func, translate))
         return Lang(interps)
 if __name__ == '__main__':
-    from PredicateTask.ToTexTransformer import *
+    from ToTexTransformer import *
     import time
     start = time.clock()
     translator = Translator(Lang.open(open('MathLexs.txt')))
