@@ -1,0 +1,31 @@
+F;() = I
+F;|() = you
+F;||() = Alice
+F;|||() = Bob
+F;||||() = dog
+F;|||||() = cat
+F;||||||() = Pushkin
+F;|||||||() = Lermontov
+
+F|;(,{t}) = {t}'s mom
+F|;|(,{t}) = {t}'s dad
+F|;||(,{t}) = {t}'s boss
+F|;|||(,{t}) = {t}'s favourite artist
+F|;||||(,{t}) = {t}'s wife
+F|;|||||(,{t}) = {t}'s husband
+
+F||;(,{t},{u}) = {t} and {u}'s daughter
+F||;|(,{t},{u}) = {t} and {u}'s son
+F||;||(,{t},{u}) = {t} and {u}'s friend
+
+P|;(,{t}) = {t} is smart
+P|;|(,{t}) = {t} is dumb
+P|;||(,{t}) = {t} is handsome
+P|;|||(,{t}) = {t} is ugly
+P|;||||(,{t}) = {t} is kind
+P|;|||||(,{t}) = {t} is evil
+
+P||;(,{t},{u}) = {t} is {u}
+P||;|(,{t},{u}) = {t} loves {u}
+P||;||(,{t},{u}) = {t} hates {u}
+P||;|||(,{t},{u}) = {t} respects {u}
