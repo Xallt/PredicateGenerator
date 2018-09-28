@@ -2,15 +2,13 @@ F;() = I
 F;|() = you
 F;||() = Alice
 F;|||() = Bob
-F;||||() = dog
-F;|||||() = cat
-F;||||||() = Pushkin
-F;|||||||() = Lermontov
+F;||||() = Pushkin
+F;|||||() = Lermontov
 
 F|;(,{t}) = {t}'s mom
 F|;|(,{t}) = {t}'s dad
 F|;||(,{t}) = {t}'s boss
-F|;|||(,{t}) = {t}'s favourite artist
+F|;|||(,{t}) = {t}'s favorite artist
 F|;||||(,{t}) = {t}'s wife
 F|;|||||(,{t}) = {t}'s husband
 
