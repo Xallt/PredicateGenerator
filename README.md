@@ -1,4 +1,5 @@
 # PredicateProj
-Проект для ФД ФКН
-
-Изъята из Workspace. Историю коммитов можно посмотреть там.
+HSE Computer Science Faculty Lyceum project.
+Scripts for generating constructions on the Predicate language.
+<hr>
+Extracted from a different repository, so the history of commits is not complete.
