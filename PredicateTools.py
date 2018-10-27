@@ -15,4 +15,4 @@ def math_evolution(interpretations, size):
     return Evolution.trans_generate(Translator(interpretations), size, True, True, True, True, True)
 
 if __name__ == '__main__':
-    print('\n'.join(natural_evolution(Lang.open('MathLexs.txt'), 20)))
+    print(TeX(math_evolution(Lang.open('MathLexs.txt'), 25)), file = open('TeX/Math.tex', 'w'))

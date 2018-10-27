@@ -516,7 +516,7 @@ class Evolution:
             preds = Predicate.generate(i, ev)
             ev.terms.append(translator.clear_gen(tts, check_untranslatable, check_x_range))
             ev.predicates.append([i for i in translator.clear_gen(preds, check_untranslatable, check_x_range) if UnitFormula.check_ok(i,check_double_inv = check_double_inv,check_x_range=check_x_range, check_correct=check_correct)])
-            add_predicates = [i for i in ev.predicates[i] if UnitFormula.check_ok(i, check_free=check_free) and i[:2] != '[-']
+            add_predicates = [i for i in ev.predicates[i] if UnitFormula.check_ok(i, check_free=check_free)]
             res_predicates += add_predicates
             if verbose:
                 print('Size {} done'.format(i))

@@ -1,4 +1,4 @@
-def clear_scobes(line):
+def clear_brackets(line):
     if line [0] == '[':
         return line[1:-1]
     return line
@@ -48,5 +48,5 @@ class TeX_Transformer:
         #if pairs:
         #    tr_sent_list = ['{} {}'.format('\\item' * int(i % 2 == 0), transform_sent(sent_list[i])) for i in range(len(sent_list))]
         #else:
-        tr_sent_list = ['{} {}'.format('\\item', TeX_Transformer.transform_sent(clear_scobes(sent_list[i]))) for i in range(len(sent_list))]
+        tr_sent_list = ['{} {}'.format('\\item', TeX_Transformer.transform_sent(clear_brackets(sent_list[i]))) for i in range(len(sent_list))]
         return  tex_begin + '\n\n'.join(tr_sent_list) + tex_end
