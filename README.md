@@ -13,7 +13,7 @@ All the output is translated to LaTeX:
 |     |     |     |
 |:---:|:---:|:---:|
 |*Basic*|*Mathematical*|*English*|
-||||
+|[a](a)|||
 <br>
 Adjacent expressions are similar because the algorithm outputs the lines in lexigraphic order
 
