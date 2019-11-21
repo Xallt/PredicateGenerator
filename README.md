@@ -18,7 +18,8 @@ All the output is translated to LaTeX:
 Adjacent expressions are similar because the algorithm outputs the lines in lexigraphic order
 
 Here are actually interesting generated "statements" (not all of them are true)
-![FirstScreenshot](img/MathFirstScreenshot.png)
+
+<img align="left" src="https://github.com/Xallt/PredicateProj/edit/master/img/MathFirstScreenshot.png">
 
 **1)** 2 is a prime number\
 **2)** <del>Every single number is prime</del>\
