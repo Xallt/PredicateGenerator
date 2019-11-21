@@ -18,7 +18,6 @@ All the output is translated to LaTeX:
 Adjacent expressions are similar because the algorithm outputs the lines in lexigraphic order
 
 Here are actually interesting generated "statements" (not all of them are true)
-In this context variables are only non-negative integers
 ![FirstScreenshot](img/MathFirstScreenshot.png)
 
 **1)** 2 is a prime number\
