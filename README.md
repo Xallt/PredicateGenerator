@@ -19,10 +19,10 @@ Adjacent expressions are similar because the algorithm outputs the lines in lexi
 
 Here are actually interesting generated "statements" (not all of them are true)
 
-<img align="left" src="https://github.com/Xallt/PredicateProj/edit/master/img/MathFirstScreenshot.png">
+<img align="left" src="https://raw.githubusercontent.com/Xallt/PredicateProj/master/img/MathFirstScreenshot.png">
 
 **1)** 2 is a prime number\
-**2)** <del>Every single number is prime</del>\
+**2)** <del>Every number is prime</del>\
 **3)** Prime numbers exist **!**\
 **5)** Every number is equal to itself\
 **6)** There are numbers which are equal to themselves\
