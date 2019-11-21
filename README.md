@@ -25,6 +25,6 @@ Here are actually interesting generated "statements" (not all of them are true)
 **2.** <del>Every number is prime</del>\
 **3.** Prime numbers exist **!**\
 **5.** Every number is equal to itself\
-**6.** There are numbers which are equal to themselves\
+**6.** There exists a number that is equal to itself\
 **7.** Not all numbers are prime\
 **8.** <del>Prime numbers don't exist</del>\
