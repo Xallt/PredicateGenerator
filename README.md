@@ -23,8 +23,8 @@ Here are actually interesting generated "statements" (not all of them are true)
 
 **1.** 2 is a prime number\
 **2.** <del>Every number is prime</del>\
-**3.** Prime numbers exist **!**\
+**3.** A prime number exists **!**\
 **5.** Every number is equal to itself\
 **6.** There exists a number that is equal to itself\
 **7.** Not all numbers are prime\
-**8.** <del>Prime numbers don't exist</del>\
+**8.** <del>Prime numbers don't exist</del>
