@@ -4,8 +4,6 @@ This algorithm can be used to **generate methematical expressions**.\
 
 1st place at **HSE CS project contest** among lyceum students.
 
-It's a generator of logical expressions with the ability to translate them to a given *language*. 
-
 ### Examples
 
 All the output is translated to LaTeX:
