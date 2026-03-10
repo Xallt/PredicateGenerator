@@ -114,14 +114,14 @@ class UnitFormula:
             gen += subcls.generate(size, pre)
         return gen
     @classmethod
-    def check(cls, line):
+    def check(cls, line: str) -> bool:
         checked = False
         for subcls in cls.__subclasses__():
             checked = checked or subcls.check(line)
         return checked
     @classmethod
     def parse(cls, line):
-        if type(line) != str:
+        if not isinstance(line, str):
             return line
         if line[0] == '{':
             return Placeholder.parse(line)
@@ -164,7 +164,7 @@ class Term(UnitFormula):
             gen += subcls.generate(size, pre)
         return gen
     @classmethod
-    def check(cls, line):
+    def check(cls, line: str) -> bool:
         checked = False
         for subcls in cls.__subclasses__():
             checked = checked or subcls.check(line)
@@ -182,7 +182,7 @@ class X(Term):
     def generate(cls, size, pre=None):
         return ['x' + '|' * (size - 1)]
     @classmethod
-    def check(cls, line):
+    def check(cls, line: str) -> bool:
         return line[0] == 'x'
     @classmethod
     def parse(cls, line):
@@ -223,7 +223,7 @@ class F(Term):
         args = split_args(arg_line)
         return F(num, [Term.parse(arg) for arg in args])
     @classmethod
-    def check(cls, line):
+    def check(cls, line: str) -> bool:
         return line[0] == 'F'
     def __init__(self, num, params):
         self.num = num
@@ -251,7 +251,7 @@ class Predicate(UnitFormula):
             gen += subcls.generate(size, pre)
         return gen
     @classmethod
-    def check(cls, line):
+    def check(cls, line: str) -> bool:
         checked = False
         for subcls in cls.__subclasses__():
             checked = checked or subcls.check(line)
@@ -301,7 +301,7 @@ class P(Predicate):
         args = split_args(arg_line)
         return P(num, [Term.parse(arg) for arg in args])
     @classmethod
-    def check(cls, line):
+    def check(cls, line: str) -> bool:
         return line[0] == 'P'
     def __init__(self, num, params):
         self.num = num
@@ -328,7 +328,7 @@ class WrapPredicate(Predicate):
             gen += subcls.generate(size, pre)
         return gen
     @classmethod
-    def check(cls, line):
+    def check(cls, line: str) -> bool:
         checked = False
         for subcls in cls.__subclasses__():
             checked = checked or subcls.check(line)
@@ -349,7 +349,7 @@ class AWrap(WrapPredicate):
                 gen_quantA += combs(['[%A%'], arg_out(size - 3, t), [']'])
         return gen_quantA
     @classmethod
-    def check(cls, line):
+    def check(cls, line: str) -> bool:
         return line[1:4] == '%A%'
     @classmethod
     def parse(cls, line):
@@ -374,7 +374,7 @@ class EWrap(WrapPredicate):
                 gen_quantA += combs(['[%E%'], arg_out(size - 3, t), [']'])
         return gen_quantA
     @classmethod
-    def check(cls, line):
+    def check(cls, line: str) -> bool:
         return line[1:4] == '%E%'
     @classmethod
     def parse(cls, line):
@@ -394,7 +394,7 @@ class InvWrap(WrapPredicate):
     def generate(cls, size, pre=None):
         return combs(['[%-%'], Predicate.generate(size - 3, pre), [']'])
     @classmethod
-    def check(cls, line):
+    def check(cls, line: str) -> bool:
         return line[1:4] == '%-%'
     @classmethod
     def parse(cls, line):
@@ -417,7 +417,7 @@ class BinAndWrap(WrapPredicate):
             gen_and += combs('[', p1, ['%&%'], p2, ']')
         return gen_and
     @classmethod
-    def check(cls, line):
+    def check(cls, line: str) -> bool:
         balance = 0
         i = 1
         while i < len(line):
@@ -459,7 +459,7 @@ class BinOrWrap(WrapPredicate):
             gen_and += combs('[', p1, ['%v%'], p2, ']')
         return gen_and
     @classmethod
-    def check(cls, line):
+    def check(cls, line: str) -> bool:
         balance = 0
         i = 1
         while i < len(line):
@@ -527,6 +527,9 @@ class Evolution:
 class Placeholder:
     def __init__(self, name):
         self.name = name.strip('{').strip('}')
+
+    def compute(self) -> bool:
+        raise TypeError("Cannot compute placeholder")
     @classmethod
     def parse(cls, line):
         right = find_right_scope(line, 0)
@@ -549,7 +552,7 @@ class Translation:
     def scan(self, interp, arg):
         if not self.valid:
             return
-        if type(interp) == Placeholder:
+        if isinstance(interp, Placeholder):
             if interp.name in self.dict and self.dict[interp.name] != str(arg):
                 self.valid = False
                 return
@@ -567,7 +570,7 @@ class Translation:
             self.scan(interp.x, arg.x)
             self.scan(interp.predicate, arg.predicate)
             return
-        elif type(arg) == InvWrap:
+        elif isinstance(arg, InvWrap):
             self.scan(interp.predicate, arg.predicate)
             return
         elif type(arg) in (BinAndWrap, BinOrWrap):
@@ -580,12 +583,12 @@ class Translator:
         self.lang = lang
     @staticmethod
     def match(a, b):
-        if type(a) == type(b):
+        if type(a) is type(b):
             if type(a) in {F, P}:
                 if a.arg_size == b.arg_size and a.num == b.num:
                     return True
                 return False
-            if type(a) == X:
+            if isinstance(a, X):
                 if a.num == b.num:
                     return True
                 return False
@@ -604,7 +607,7 @@ class Translator:
                 return arg
     def translate(self, arg, check_untranslatable=False):
         #print(arg)
-        if type(arg) == str:
+        if isinstance(arg, str):
             arg = UnitFormula.parse(arg)
         for interp in self.lang.interpretations:
             if Translator.match(interp.origin, arg):
@@ -612,15 +615,15 @@ class Translator:
                 if t == '#':
                     continue
                 return t
-        if type(arg) in (F, P):
+        if isinstance(arg, (F, P)):
             if check_untranslatable:
                 return '#'
             return str(type(arg)(arg.num, [self.translate(i, check_untranslatable) for i in arg.args]))
-        elif type(arg) in (AWrap, EWrap):
+        elif isinstance(arg, (AWrap, EWrap)):
             return str(type(arg)(self.translate(arg.x, check_untranslatable), self.translate(arg.predicate, check_untranslatable)))
-        elif type(arg) == InvWrap:
+        elif isinstance(arg, InvWrap):
             return str(type(arg)(self.translate(arg.predicate, check_untranslatable)))
-        elif type(arg) in (BinAndWrap, BinOrWrap):
+        elif isinstance(arg, (BinAndWrap, BinOrWrap)):
             return str(type(arg)(self.translate(arg.p1, check_untranslatable), self.translate(arg.p2, check_untranslatable)))
         return str(arg)
     def translate_gen(self, gen, check_untranslatable=False, check_x_range=False):
