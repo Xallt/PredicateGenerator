@@ -24,7 +24,11 @@ def math_evolution(interpretations, size):
 
 
 if __name__ == "__main__":
+    generated_formulas = []
+    for pred in math_evolution(Lang.open("Languages/MathLexs.txt"), 25):
+        print(pred)
+        generated_formulas.append(pred)
     print(
-        TeX(math_evolution(Lang.open("MathLexs.txt"), 25)),
+        TeX(generated_formulas),
         file=open("TeX/Math.tex", "w"),
     )
