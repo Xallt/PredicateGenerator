@@ -1,3 +1,7 @@
+from pathlib import Path
+
+import tyro
+
 from FormulaClasses import Evolution, Lang, Translator
 from ToTexTransformer import TeX_Transformer
 
@@ -17,18 +21,25 @@ def natural_evolution(language, size):  # Automatically removes
     return Evolution.trans_generate(Translator(language), size, True, True, True, True)
 
 
-def math_evolution(interpretations, size):
+def math_evolution(lang: Lang, size: int):
     return Evolution.trans_generate(
-        Translator(interpretations), size, True, True, True, True, True
+        Translator(lang), size, True, True, True, True, True
     )
+
+
+def main(
+    lang_path: Path = Path("Languages/MathLexs.txt"),
+    size: int = 25,
+    out_path: Path = Path("TeX/Math.tex"),
+):
+    generated_formulas = []
+    lang = Lang.open(str(lang_path))
+    for pred in math_evolution(lang, size):
+        print(pred)
+        generated_formulas.append(pred)
+    with open(str(out_path), "w") as f:
+        f.write(str(TeX(generated_formulas)))
 
 
 if __name__ == "__main__":
-    generated_formulas = []
-    for pred in math_evolution(Lang.open("Languages/MathLexs.txt"), 25):
-        print(pred)
-        generated_formulas.append(pred)
-    print(
-        TeX(generated_formulas),
-        file=open("TeX/Math.tex", "w"),
-    )
+    tyro.cli(main)

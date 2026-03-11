@@ -146,7 +146,7 @@ class UnitFormula:
         return checked
 
     @classmethod
-    def parse(cls, line):
+    def parse(cls, line: str) -> "UnitFormula":
         if not isinstance(line, str):
             return line
         if line[0] == "{":
@@ -212,7 +212,7 @@ class Term(UnitFormula):
         return checked
 
     @classmethod
-    def parse(cls, line):
+    def parse(cls, line: str) -> "UnitFormula":
         if line[0] == "{":
             return Placeholder.parse(line)
         for subcls in cls.__subclasses__():
@@ -334,13 +334,13 @@ class Predicate(UnitFormula):
         raise SyntaxError("Cannot parse given line")
 
     @classmethod
-    def is_correct(cls, line):
+    def is_correct(cls, line: str) -> bool:
         if not Predicate.check(str(line)):
             raise TypeError("{} not a predicate".format(line))
         if not UnitFormula.is_const_expression(str(line)):
             return True
-        line = UnitFormula.parse(line)
-        return line.compute()
+        formula = UnitFormula.parse(line)
+        return bool(formula.compute())
 
 
 class P(Predicate):
@@ -688,7 +688,7 @@ class Evolution:
                 print("Size {} done".format(i))
 
 
-class Placeholder:
+class Placeholder(UnitFormula):
     def __init__(self, name):
         self.name = name.strip("{").strip("}")
 
@@ -755,7 +755,7 @@ class Translation:
 
 
 class Translator:
-    def __init__(self, lang):
+    def __init__(self, lang: Lang):
         self.lang = lang
 
     @staticmethod
@@ -772,7 +772,9 @@ class Translator:
             return True
         return False
 
-    def use_interpretation(self, interp, arg, check_untranslatable=False):
+    def use_interpretation(
+        self, interp: Interpretation, arg, check_untranslatable=False
+    ):
         trans = Translation.build(interp.origin, arg)
         if trans.valid:
             for key in trans.dict:
@@ -848,11 +850,11 @@ class Translator:
 
 
 class Lang:
-    def __init__(self, interps):
+    def __init__(self, interps: list[Interpretation]):
         self.interpretations = interps
 
     @staticmethod
-    def open(filename):
+    def open(filename: str) -> "Lang":
         text = open(filename, "r").read().split("\n")
         interps = []
         for line in text:
