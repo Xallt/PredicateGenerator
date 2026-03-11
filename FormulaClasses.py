@@ -1,3 +1,5 @@
+from typing import Callable
+
 import numpy as np
 
 
@@ -32,7 +34,8 @@ P_compute = {
 }
 
 
-def scrap_x(sent, t):
+def scrap_x(sent: str, t: int) -> int:
+    """Number of | at index t"""
     s = 0
     t += 1
     while t < len(sent) and sent[t] == "|":
@@ -41,7 +44,8 @@ def scrap_x(sent, t):
     return s
 
 
-def find_arg(sent):
+def find_arg(sent: str) -> list[str]:
+    """List of all variables in the sentence"""
     arg_list = []
     for i in range(len(sent)):
         if sent[i] == "x":
@@ -49,7 +53,8 @@ def find_arg(sent):
     return arg_list
 
 
-def find_quanted(sent):
+def find_quanted(sent: str) -> list[str]:
+    """List of all variables under A/E quantifiers"""
     arg_list = []
     for i in range(len(sent)):
         if sent[i - 1] in "AE":
@@ -57,18 +62,19 @@ def find_quanted(sent):
     return arg_list
 
 
-def arg_out(size, sent):
+def arg_out_quant(size: int, sent: str) -> list[str]:
+    """List of all <var>[<sent>] with <var> picked specifically from find_arg(sent). For generating quantifiers."""
     arg_list = list(np.unique(find_arg(sent)))
     if "" in arg_list:
         arg_list.remove("")
     gen_arg_out = []
-    for i in arg_list:
-        if len(i) + len(sent) + 2 == size and (i + "[") not in sent:
-            gen_arg_out += [i + "[" + sent + "]"]
+    for arg in arg_list:
+        if len(arg) + len(sent) + 2 == size and (arg + "[") not in sent:
+            gen_arg_out.append(arg + "[" + sent + "]")
     return gen_arg_out
 
 
-def combs(*args):
+def combs(*args: list[str]) -> list[str]:
     if len(args) == 1:
         return args[0]
     gen = []
@@ -78,7 +84,8 @@ def combs(*args):
     return gen
 
 
-def gen_args(arg, size, pre=None):
+def gen_args(arg: int, size: int, pre: Evolution | None = None):
+    """List of all possible argument lists with <arg> arguments and <size> resulting string size"""
     if arg == 0:
         return [""]
     if arg == 1:
@@ -130,7 +137,7 @@ def split_args(arg_line):
 
 class UnitFormula:
     @classmethod
-    def generate(cls, size, pre=None):
+    def generate(cls, size: int, pre: Evolution | None = None):
         if pre is not None and size < len(pre.terms):
             return pre.terms[size]
         gen = []
@@ -147,8 +154,6 @@ class UnitFormula:
 
     @classmethod
     def parse(cls, line: str) -> "UnitFormula":
-        if not isinstance(line, str):
-            return line
         if line[0] == "{":
             return Placeholder.parse(line)
         for subcls in cls.__subclasses__():
@@ -157,7 +162,7 @@ class UnitFormula:
         raise SyntaxError("Cannot parse {}".format(line))
 
     @staticmethod
-    def check_x_range(line):
+    def check_x_range(line: str) -> bool:
         xs = set([len(i) - 1 for i in find_arg(line)])
         if len(xs) == 0:
             return True
@@ -165,7 +170,7 @@ class UnitFormula:
         return minx == 0 and maxx == len(xs) - 1
 
     @staticmethod
-    def check_has_free(line):
+    def check_has_free(line: str) -> bool:
         xs = find_arg(line)
         con_xs = find_quanted(line)
         return len(set(xs) - set(con_xs)) > 0
@@ -193,10 +198,13 @@ class UnitFormula:
             and (not check_correct or Predicate.is_correct(line))
         )
 
+    def compute(self) -> bool:
+        raise NotImplementedError("Cannot compute UnitFormula")
+
 
 class Term(UnitFormula):
     @classmethod
-    def generate(cls, size, pre=None):
+    def generate(cls, size, pre: Evolution | None = None):
         if pre is not None and size < len(pre.terms):
             return pre.terms[size]
         gen = []
@@ -223,7 +231,7 @@ class Term(UnitFormula):
 
 class X(Term):
     @classmethod
-    def generate(cls, size, pre=None):
+    def generate(cls, size, pre: Evolution | None = None):
         return ["x" + "|" * (size - 1)]
 
     @classmethod
@@ -247,7 +255,7 @@ class X(Term):
 
 class F(Term):
     @classmethod
-    def generate(cls, size, pre=None):
+    def generate(cls, size, pre: Evolution | None = None):
         gen = []
         for num in range(size):
             for arg in range(size):
@@ -294,7 +302,7 @@ class F(Term):
             + "({})".format("".join(["," + str(i) for i in self.args]))
         )
 
-    def get_computer(self):
+    def get_computer(self) -> Callable:
         tup = (self.arg_size, self.num)
         if tup not in F_compute:
             raise KeyError("{} not computable".format(str(self)))
@@ -307,7 +315,7 @@ class F(Term):
 
 class Predicate(UnitFormula):
     @classmethod
-    def generate(cls, size, pre=None):
+    def generate(cls, size, pre: Evolution | None = None):
         if size < 4:
             return []
         if pre is not None and size < len(pre.predicates):
@@ -345,7 +353,7 @@ class Predicate(UnitFormula):
 
 class P(Predicate):
     @classmethod
-    def generate(cls, size, pre=None):
+    def generate(cls, size, pre: Evolution | None = None):
         gen = []
         for num in range(size):
             for arg in range(size):
@@ -406,7 +414,7 @@ class P(Predicate):
 
 class WrapPredicate(Predicate):
     @classmethod
-    def generate(cls, size, pre=None):
+    def generate(cls, size, pre: Evolution | None = None):
         if pre is not None and size < len(pre.predicates):
             return pre.predicates[size]
         gen = []
@@ -431,12 +439,12 @@ class WrapPredicate(Predicate):
 
 class AWrap(WrapPredicate):
     @classmethod
-    def generate(cls, size, pre=None):
+    def generate(cls, size, pre: Evolution | None = None):
         gen_quantA = []
         for i in range(4, size - 5):
             pA = Predicate.generate(i, pre)
             for t in pA:
-                gen_quantA += combs(["[%A%"], arg_out(size - 3, t), ["]"])
+                gen_quantA += combs(["[%A%"], arg_out_quant(size - 3, t), ["]"])
         return gen_quantA
 
     @classmethod
@@ -462,12 +470,12 @@ class AWrap(WrapPredicate):
 
 class EWrap(WrapPredicate):
     @classmethod
-    def generate(cls, size, pre=None):
+    def generate(cls, size, pre: Evolution | None = None):
         gen_quantA = []
         for i in range(4, size - 5):
             pA = Predicate.generate(i, pre)
             for t in pA:
-                gen_quantA += combs(["[%E%"], arg_out(size - 3, t), ["]"])
+                gen_quantA += combs(["[%E%"], arg_out_quant(size - 3, t), ["]"])
         return gen_quantA
 
     @classmethod
@@ -493,7 +501,7 @@ class EWrap(WrapPredicate):
 
 class InvWrap(WrapPredicate):
     @classmethod
-    def generate(cls, size, pre=None):
+    def generate(cls, size, pre: Evolution | None = None):
         return combs(["[%-%"], Predicate.generate(size - 3, pre), ["]"])
 
     @classmethod
@@ -518,12 +526,12 @@ class InvWrap(WrapPredicate):
 
 class BinAndWrap(WrapPredicate):
     @classmethod
-    def generate(cls, size, pre=None):
+    def generate(cls, size, pre: Evolution | None = None):
         gen_and = []
         for i in range(4, size - 6):
             p1 = Predicate.generate(i, pre)
             p2 = Predicate.generate(size - 3 - i, pre)
-            gen_and += combs("[", p1, ["%&%"], p2, "]")
+            gen_and += combs(["["], p1, ["%&%"], p2, ["]"])
         return gen_and
 
     @classmethod
@@ -569,12 +577,12 @@ class BinAndWrap(WrapPredicate):
 
 class BinOrWrap(WrapPredicate):
     @classmethod
-    def generate(cls, size, pre=None):
+    def generate(cls, size, pre: Evolution | None = None):
         gen_and = []
         for i in range(4, size - 6):
             p1 = Predicate.generate(i, pre)
             p2 = Predicate.generate(size - 3 - i, pre)
-            gen_and += combs("[", p1, ["%v%"], p2, "]")
+            gen_and += combs(["["], p1, ["%v%"], p2, ["]"])
         return gen_and
 
     @classmethod
