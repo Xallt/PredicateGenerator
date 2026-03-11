@@ -1,3 +1,4 @@
+import itertools
 from typing import Callable
 
 import numpy as np
@@ -656,7 +657,7 @@ class Evolution:
         verbose=False,
     ):
         ev = Evolution([], [])
-        for i in range(size + 1):
+        for i in itertools.count() if size is None else range(size + 1):
             tts = Term.generate(i, ev)
             preds = Predicate.generate(i, ev)
             ev.terms.append(

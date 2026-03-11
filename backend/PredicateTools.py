@@ -21,7 +21,7 @@ def natural_evolution(language, size):  # Automatically removes
     return Evolution.trans_generate(Translator(language), size, True, True, True, True)
 
 
-def math_evolution(lang: Lang, size: int):
+def math_evolution(lang: Lang, size: int | None = None):
     return Evolution.trans_generate(
         Translator(lang), size, True, True, True, True, True
     )

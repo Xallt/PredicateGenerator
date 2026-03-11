@@ -25,16 +25,13 @@ BACKEND_DIR = Path(__file__).parent
 
 
 @app.get("/api/generate")
-async def api_generate(size: int = 25, lang: str = "MathLexs"):
+async def api_generate(size: int | None = None, lang: str = "MathLexs"):
     lang_path = BACKEND_DIR / "Languages" / f"{lang}.txt"
 
     async def event_generator():
-        try:
-            for pred in math_evolution(Lang.open(str(lang_path)), size):
-                tex = TeX_Transformer.transform_sent(clear_brackets(pred))
-                yield {"data": json.dumps({"expression": tex, "raw": pred})}
-                await asyncio.sleep(0)
-        finally:
-            yield {"event": "done", "data": ""}
+        for pred in math_evolution(Lang.open(str(lang_path)), size):
+            tex = TeX_Transformer.transform_sent(clear_brackets(pred))
+            yield {"data": json.dumps({"expression": tex, "raw": pred})}
+            await asyncio.sleep(0)
 
     return EventSourceResponse(event_generator())
