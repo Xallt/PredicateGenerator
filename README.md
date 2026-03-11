@@ -4,6 +4,20 @@ This algorithm can be used to **generate methematical expressions**.\
 
 1st place at **HSE CS project contest** among HSE lyceum students.
 
+### Running the app
+
+**Backend** (FastAPI):
+```bash
+cd backend && uv run uvicorn main:app --reload --port 8000
+```
+
+**Frontend** (Vite):
+```bash
+cd frontend && npm install && npm run dev
+```
+
+Open http://localhost:5173, click Start to stream generated expressions.
+
 ### Examples
 
 All the output is translated to LaTeX:
