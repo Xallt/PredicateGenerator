@@ -40,11 +40,15 @@ startBtn.addEventListener('click', () => {
 
   eventSource = new EventSource('/api/generate?lang=MathLexs')
 
+  const maxLines = 10000
   eventSource.onmessage = (e) => {
     const { expression } = JSON.parse(e.data) as { expression: string; raw: string }
     const li = document.createElement('li')
     li.innerHTML = renderTex(expression)
     listEl.appendChild(li)
+    if (listEl.children.length >= maxLines) {
+      stopStream()
+    }
   }
 
   eventSource.onerror = () => {
