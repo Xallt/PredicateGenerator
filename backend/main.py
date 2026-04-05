@@ -15,7 +15,7 @@ from ToTexTransformer import TeX_Transformer, clear_brackets
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "https://predgen.xallt.dev"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
